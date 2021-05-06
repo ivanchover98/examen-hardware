@@ -1,0 +1,44 @@
+---
+- name: playbook_examen-node-one
+  become: yes
+  hosts: webservers
+  tasks:
+    - name: crear grup
+      group: name=user state=present
+  
+    - name: crear usuaris webservers
+      user: name=admin password=123 group=user home=/admin state=present createhome=yes
+
+
+- name: playbook_examen_node-two
+  become: yes
+  hosts: debservers
+  tasks:
+    - name: crear usuaris a debservers
+      user: name=admin password=123 group=user home=/dev state=present createhome=yes
+
+- name: update and upgrade on all servers
+  hosts: webservers debservers
+  tasks:
+    - name: update and upgrade
+      apt: update_cache=yes state=present  upgrade=yes
+
+- name: copiar arxius
+  hosts: webservers debservers
+  tasks:
+    - name: copiar admin.txt en webservers
+      copy: 
+        src: /home/vagrant/examen/admin.txt
+        dest: /home/vagrant/examen/admin.txt
+        owner: admin
+        group: user
+
+    - name: copiar admin.txt en webservers
+      copy: 
+        src: /home/vagrant/examen/admin.txt
+        dest: /home/vagrant/examen/admin.txt
+        owner: dev
+        group: user
+
+...
+
